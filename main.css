@@ -1,4 +1,3 @@
-/* RESET */
 * {
   margin: 0;
   padding: 0;
@@ -16,46 +15,29 @@ body {
   overflow-x: hidden;
 }
 
-/* NAVBAR */
 nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0.8em 3em;
   background: #222;
-}
-.navbar .logo {
-  font-size: 2rem;
-  font-weight: bold;
-  color: white;
-  text-decoration: none;
-  margin-left: 0.5em;
-}
-
-.navbar {
   position: fixed;
-  left: 0;
-  top: 0;
   width: 100%;
-  padding: 20px 9%;
-  background: rgb(2, 20, 48);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  top: 0;
   z-index: 100;
 }
+
 .navbar .logo {
   font-size: 45px;
   font-weight: 700;
   color: white;
   text-decoration: none;
-  margin-left: -50px; /* moves a little more to left */
+  margin-left: 20px;
   transition: transform 0.3s ease, color 0.3s ease;
   text-align: left;
 }
 
-.navbar .logo:hover,
-.navbar .logo.active {
+.navbar .logo:hover {
   transform: scale(1.1);
   color: rgb(2, 91, 10);
   cursor: pointer;
@@ -65,8 +47,9 @@ nav {
   list-style: none;
   display: flex;
   gap: 2em;
-  margin-right: -70px; /* adds space between logo and links */
+  margin-right: -25px;
 }
+
 .navbar ul li a {
   color: white;
   text-decoration: none;
@@ -75,63 +58,146 @@ nav {
   transition: transform 0.3s ease, color 0.3s ease;
 }
 
-.navbar ul li a:hover {
-  transform: scale(1.15);
-  color: rgb(5, 186, 20);
-}
-
-.navbar ul li.active a {
-  color: rgb(5, 186, 20);
-  transform: scale(1.15);
-}
 .navbar ul li a:hover,
-.navbar ul li.active a {
+.navbar ul li a.active {
   color: rgb(5, 186, 20);
-  transform: scale(1.1); /* slightly bigger on hover */
+  transform: scale(1.1);
 }
 
-/* HOME SECTION */
+.bars-animation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bars-animation .bar {
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.05);
+  animation: moveBar 4s linear infinite;
+}
+
+.bars-animation .bar:nth-child(1) {
+  top: 10%;
+  animation-delay: 0s;
+}
+.bars-animation .bar:nth-child(2) {
+  top: 25%;
+  animation-delay: 0.5s;
+}
+.bars-animation .bar:nth-child(3) {
+  top: 40%;
+  animation-delay: 1s;
+}
+.bars-animation .bar:nth-child(4) {
+  top: 55%;
+  animation-delay: 1.5s;
+}
+.bars-animation .bar:nth-child(5) {
+  top: 70%;
+  animation-delay: 2s;
+}
+.bars-animation .bar:nth-child(6) {
+  top: 85%;
+  animation-delay: 2.5s;
+}
+
+@keyframes moveBar {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+.section,
 .home {
   min-height: 100vh;
+  padding: 120px 9%;
+  scroll-margin-top: 100px;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 1s ease forwards;
+}
+
+.section:nth-of-type(1) {
+  animation-delay: 0.3s;
+}
+.section:nth-of-type(2) {
+  animation-delay: 0.5s;
+}
+.section:nth-of-type(3) {
+  animation-delay: 0.7s;
+}
+.section:nth-of-type(4) {
+  animation-delay: 0.9s;
+}
+.section:nth-of-type(5) {
+  animation-delay: 1.1s;
+}
+.section:nth-of-type(6) {
+  animation-delay: 1.3s;
+}
+.section:nth-of-type(7) {
+  animation-delay: 1.5s;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.section h3 {
+  font-size: 45px;
+  margin-bottom: 25px;
+  color: rgb(176, 206, 174);
+  transition: transform 0.3s ease, color 0.3s ease;
+  cursor: pointer;
+}
+
+.section h3:hover {
+  transform: scale(1.05);
+  color: #00ff99;
+}
+
+.section h3:active {
+  transform: scale(1.03);
+  color: rgb(150, 255, 150);
+}
+
+.home {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 120px 9% 0;
-  opacity: 0;
-  transition: opacity 1.5s ease;
-}
-
-.home.visible {
-  opacity: 1;
+  padding-top: 120px;
 }
 
 .home-info {
-  max-width: 55%;
+  text-align: center;
+  margin-top: 6rem;
 }
 
 .home-info h1 {
   font-size: 50px;
   color: rgb(212, 228, 188);
-  transition: transform 0.3s ease; /* smooth transition */
+  transition: transform 0.3s ease;
 }
 
 .home-info h1:hover {
-  transform: scale(1.1); /* slightly larger on hover */
+  transform: scale(1.1);
 }
 
 .home-info h2 {
   font-size: 25px;
   margin-bottom: 15px;
-  opacity: 0; /* hidden at first */
-  transform: translateY(-20px); /* start slightly above */
-  animation: slideDown 1s ease forwards;
-  animation-delay: 1s; /* appears 1 sec after page load */
-}
-@keyframes slideDown {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .home-info p {
@@ -146,25 +212,23 @@ nav {
   margin-top: 40px;
 }
 
-/* Download Button */
 .btn {
   position: relative;
   display: inline-block;
   background: linear-gradient(135deg, #00ff88, #32cd32);
   color: rgb(10, 30, 40);
-  padding: 10px 30px; /* more horizontal padding for ellipse shape */
-  border-radius: 50px; /* makes it capsule-like */
+  padding: 10px 30px;
+  border-radius: 50px;
   font-weight: 600;
   text-decoration: none;
   letter-spacing: 0.5px;
   overflow: hidden;
-  border: 2px solid #006400; /* outer dark green border */
+  border: 2px solid #006400;
   transition: all 0.3s ease;
   box-shadow: 0 0 15px rgba(50, 205, 50, 0.4),
     inset 0 0 10px rgba(0, 255, 128, 0.6);
 }
 
-/* Glowing soft highlight inside */
 .btn::before {
   content: "";
   position: absolute;
@@ -179,14 +243,12 @@ nav {
   transition: all 0.4s ease;
 }
 
-/* Hover: glowing & floating effect */
 .btn:hover {
   transform: scale(1.08);
   box-shadow: 0 0 30px rgba(50, 205, 50, 0.8),
     inset 0 0 15px rgba(0, 255, 128, 0.8);
 }
 
-/* Active: subtle press down animation */
 .btn:active {
   transform: scale(0.95);
   box-shadow: 0 0 10px rgba(0, 255, 128, 0.5),
@@ -200,6 +262,7 @@ nav {
   gap: 20px;
   margin-top: 2px;
 }
+
 .social-icons a {
   position: relative;
   width: 35px;
@@ -212,28 +275,12 @@ nav {
   box-shadow: 0 0 10px rgba(0, 255, 128, 0.3),
     inset 0 0 10px rgba(0, 255, 128, 0.2);
   transition: all 0.3s ease;
-  color: #c2fbd7; /* icon color */
+  color: #c2fbd7;
   font-size: 22px;
   text-decoration: none;
   overflow: hidden;
 }
 
-/* Subtle light highlight inside the circle */
-.social-icons a::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle at 40% 40%,
-    rgba(144, 238, 144, 0.5),
-    transparent 70%
-  );
-  opacity: 0.6;
-  transition: all 0.4s ease;
-}
-
-/* Hover: glowing + scale-up effect */
 .social-icons a:hover {
   transform: scale(1.2);
   background: radial-gradient(circle at 70% 30%, #00ff88, #006400);
@@ -241,13 +288,7 @@ nav {
     inset 0 0 10px rgba(0, 255, 128, 0.6);
   color: #fff;
 }
-/* Optional subtle rotation when hovered */
-.social-icons a:hover i {
-  transform: rotate(deg);
-  transition: transform 0.3s ease;
-}
 
-/* IMAGE SECTION */
 .home-img {
   position: relative;
   display: flex;
@@ -266,12 +307,11 @@ nav {
   box-shadow: 0 0 25px rgba(0, 255, 255, 0.3);
 }
 
-/* 🔥 Rotating Outer Lines */
 .home-img .img-box::before,
 .home-img .img-box::after {
   content: "";
   position: absolute;
-  inset: -8px; /* slightly outside main circle */
+  inset: -8px;
   border-radius: 50%;
   border: 3px solid transparent;
   background: conic-gradient(
@@ -289,11 +329,10 @@ nav {
   animation: rotateArcs 5s linear infinite;
   z-index: 1;
 }
-/* Second parallel red ring (slightly further out) */
+
 .home-img .img-box::after {
   inset: -13px;
-  opacity: 0.9;
-  animation-duration: 7s; /* slightly slower for depth effect */
+  animation-duration: 7s;
 }
 
 @keyframes rotateArcs {
@@ -305,7 +344,6 @@ nav {
   }
 }
 
-/* ✅ Image setup */
 .home-img .img-item {
   position: relative;
   width: 100%;
@@ -328,22 +366,11 @@ nav {
   z-index: 3;
 }
 
-/* COMMON SECTION STYLES */
-.section {
-  min-height: 100vh;
-  background: rgb(6, 18, 34);
-  padding: 120px 9%;
-  scroll-margin-top: 100px;
-}
-
-h3:nth-of-type(2) {
-  margin-top: 30px; /* extra space before Certifications */
-}
-
 .section h3 {
   font-size: 45px;
   margin-bottom: 25px;
   color: rgb(176, 206, 174);
+  transition: transform 0.3s ease;
 }
 
 .card {
@@ -353,6 +380,8 @@ h3:nth-of-type(2) {
   padding: 25px 30px;
   line-height: 1.7;
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+  transition: all 0.4s ease;
+  cursor: pointer;
 }
 
 .card h4 {
@@ -369,28 +398,12 @@ h3:nth-of-type(2) {
   margin-bottom: 10px;
 }
 
-/* CONTACT LINKS */
 .card a {
   color: rgb(168, 214, 243);
   text-decoration: none;
 }
 .card a:hover {
   text-decoration: underline;
-}
-
-h3:hover {
-  transform: scale(1.05);
-  transition: transform 0.3s ease;
-}
-
-/* Reset all headings to normal state */
-h3 {
-  transition: transform 0.3s ease;
-}
-/* Card hover / click (scale-up) effect */
-.card {
-  transition: all 0.4s ease;
-  cursor: pointer;
 }
 
 .card:hover {
@@ -400,33 +413,32 @@ h3 {
   border-color: rgba(0, 255, 128, 0.4);
 }
 
-/* Optional subtle "press down" effect when clicked */
 .card:active {
   transform: scale(1.02);
   box-shadow: 0 0 20px rgba(0, 255, 128, 0.3),
     inset 0 0 10px rgba(0, 255, 128, 0.2);
 }
-/* Main animated heading */
+
 .animated-heading {
-  font-size: 2.2rem;
+  font-size: 2rem;
   font-weight: 600;
   color: #00ff99;
   display: flex;
-  align-items: center; /* keeps "I'm a" and dynamic words aligned */
-  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 5px;
 }
 
-/* Container for changing words */
 .dynamic-words {
   position: relative;
   display: inline-block;
-  width: 550px;
-  height: 1em; /* ✅ slightly increased to give full visibility */
+  width: 160px;
+  height: 1em;
   overflow: hidden;
-  vertical-align: middle; /* ✅ aligns perfectly with "I'm a" */
-  transform: translateY(-2px); /* ✅ gently pushes it up */
+  vertical-align: middle;
 }
-/* Each word styling */
+
 .dynamic-words span {
   position: absolute;
   top: 0;
@@ -436,10 +448,9 @@ h3 {
   color: #1dcd7b;
   text-shadow: 0 0 12px #09a45c, 0 0 25px #004d26;
   font-weight: 800;
-  line-height: 1.2em; /* ✅ keeps it consistent */
+  line-height: 1.2em;
 }
 
-/* Delays for each word */
 .dynamic-words span:nth-child(1) {
   animation-delay: 0s;
 }
@@ -447,21 +458,12 @@ h3 {
   animation-delay: 2s;
 }
 
-/* Word animation */
 @keyframes wordChange {
-  0% {
-    opacity: 0;
-    transform: translateY(0);
-  }
-  10% {
-    opacity: 1;
-  }
+  0%,
   40% {
     opacity: 1;
   }
-  50% {
-    opacity: 0;
-  }
+  50%,
   100% {
     opacity: 0;
   }
