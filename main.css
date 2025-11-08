@@ -11,47 +11,83 @@ html {
 
 body {
   font-family: "Poppins", sans-serif;
-  background: rgb(17, 38, 70);
+  background: rgb(6, 18, 34);
   color: white;
   overflow-x: hidden;
 }
 
 /* NAVBAR */
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8em 3em;
+  background: #222;
+}
+.navbar .logo {
+  font-size: 2rem;
+  font-weight: bold;
+  color: white;
+  text-decoration: none;
+  margin-left: 0.5em;
+}
+
 .navbar {
   position: fixed;
   left: 0;
   top: 0;
   width: 100%;
   padding: 20px 9%;
-  background: rgb(47, 205, 216);
+  background: rgb(2, 20, 48);
   display: flex;
   justify-content: space-between;
   align-items: center;
   z-index: 100;
 }
-
 .navbar .logo {
-  font-size: 26px;
+  font-size: 45px;
   font-weight: 700;
   color: white;
+  text-decoration: none;
+  margin-left: -50px; /* moves a little more to left */
+  transition: transform 0.3s ease, color 0.3s ease;
+  text-align: left;
+}
+
+.navbar .logo:hover,
+.navbar .logo.active {
+  transform: scale(1.1);
+  color: rgb(2, 91, 10);
+  cursor: pointer;
 }
 
 .navbar ul {
   list-style: none;
   display: flex;
   gap: 2em;
+  margin-right: -70px; /* adds space between logo and links */
 }
-
 .navbar ul li a {
   color: white;
   text-decoration: none;
   font-weight: 500;
-  transition: color 0.3s;
+  display: inline-block;
+  transition: transform 0.3s ease, color 0.3s ease;
 }
 
+.navbar ul li a:hover {
+  transform: scale(1.15);
+  color: rgb(5, 186, 20);
+}
+
+.navbar ul li.active a {
+  color: rgb(5, 186, 20);
+  transform: scale(1.15);
+}
 .navbar ul li a:hover,
 .navbar ul li.active a {
-  color: black;
+  color: rgb(5, 186, 20);
+  transform: scale(1.1); /* slightly bigger on hover */
 }
 
 /* HOME SECTION */
@@ -75,12 +111,27 @@ body {
 
 .home-info h1 {
   font-size: 45px;
-  color: greenyellow;
+  color: rgb(212, 228, 188);
+  transition: transform 0.3s ease; /* smooth transition */
+}
+
+.home-info h1:hover {
+  transform: scale(1.1); /* slightly larger on hover */
 }
 
 .home-info h2 {
   font-size: 25px;
   margin-bottom: 15px;
+  opacity: 0; /* hidden at first */
+  transform: translateY(-20px); /* start slightly above */
+  animation: slideDown 1s ease forwards;
+  animation-delay: 1s; /* appears 1 sec after page load */
+}
+@keyframes slideDown {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .home-info p {
@@ -92,82 +143,160 @@ body {
   display: flex;
   align-items: center;
   gap: 20px;
+  margin-top: 40px;
 }
 
+/* Download Button */
 .btn {
-  background: greenyellow;
-  color: rgb(17, 38, 70);
-  padding: 10px 20px;
-  border-radius: 5px;
+  position: relative;
+  display: inline-block;
+  background: linear-gradient(135deg, #00ff88, #32cd32);
+  color: rgb(10, 30, 40);
+  padding: 10px 30px; /* more horizontal padding for ellipse shape */
+  border-radius: 50px; /* makes it capsule-like */
   font-weight: 600;
   text-decoration: none;
-  transition: background 0.3s;
+  letter-spacing: 0.5px;
+  overflow: hidden;
+  border: 2px solid #006400; /* outer dark green border */
+  transition: all 0.3s ease;
+  box-shadow: 0 0 15px rgba(50, 205, 50, 0.4),
+    inset 0 0 10px rgba(0, 255, 128, 0.6);
 }
 
+/* Glowing soft highlight inside */
+.btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50px;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(144, 238, 144, 0.8),
+    transparent 70%
+  );
+  opacity: 0.7;
+  transition: all 0.4s ease;
+}
+
+/* Hover: glowing & floating effect */
 .btn:hover {
-  background: #bfff00;
+  transform: scale(1.08);
+  box-shadow: 0 0 30px rgba(50, 205, 50, 0.8),
+    inset 0 0 15px rgba(0, 255, 128, 0.8);
 }
 
+/* Active: subtle press down animation */
+.btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 0 10px rgba(0, 255, 128, 0.5),
+    inset 0 0 10px rgba(0, 255, 128, 0.5);
+}
+
+.social-icons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 2px;
+}
 .social-icons a {
-  color: white;
-  font-size: 20px;
-  margin-right: 10px;
-  transition: color 0.3s;
+  position: relative;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #013220, #006400);
+  box-shadow: 0 0 10px rgba(0, 255, 128, 0.3),
+    inset 0 0 10px rgba(0, 255, 128, 0.2);
+  transition: all 0.3s ease;
+  color: #c2fbd7; /* icon color */
+  font-size: 22px;
+  text-decoration: none;
+  overflow: hidden;
 }
 
+/* Subtle light highlight inside the circle */
+.social-icons a::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 40% 40%,
+    rgba(144, 238, 144, 0.5),
+    transparent 70%
+  );
+  opacity: 0.6;
+  transition: all 0.4s ease;
+}
+
+/* Hover: glowing + scale-up effect */
 .social-icons a:hover {
-  color: greenyellow;
+  transform: scale(1.2);
+  background: radial-gradient(circle at 70% 30%, #00ff88, #006400);
+  box-shadow: 0 0 25px rgba(0, 255, 128, 0.8),
+    inset 0 0 10px rgba(0, 255, 128, 0.6);
+  color: #fff;
+}
+/* Optional subtle rotation when hovered */
+.social-icons a:hover i {
+  transform: rotate(deg);
+  transition: transform 0.3s ease;
 }
 
 /* IMAGE SECTION */
 .home-img {
   position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .home-img .img-box {
   width: 23vw;
   height: 23vw;
-  background: rgb(17, 38, 70);
+  background: rgb(6, 18, 34);
   border-radius: 50%;
   padding: 5px;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.3);
 }
 
-.home-img .img-box::before {
+/* 🔥 Rotating Outer Lines */
+.home-img .img-box::before,
+.home-img .img-box::after {
   content: "";
   position: absolute;
-  inset: 0;
+  inset: -8px; /* slightly outside main circle */
   border-radius: 50%;
+  border: 3px solid transparent;
   background: conic-gradient(
-    transparent,
-    transparent,
-    transparent,
-    greenyellow
+    from 0deg,
+    #0d4c0d 0deg,
+    #082408 45deg,
+    transparent 90deg,
+    #023902 135deg,
+    #05361e 180deg,
+    transparent 225deg,
+    #043604 270deg,
+    #092009 315deg,
+    transparent 360deg
   );
-  animation: rotateCircle 4s linear infinite;
-}
-
-.home-img .img-item {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  background: rgb(17, 38, 70);
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  overflow: hidden;
+  animation: rotateArcs 5s linear infinite;
   z-index: 1;
 }
-
-.home-img .img-item img {
-  width: 85%;
-  border-radius: 50%;
-  position: relative;
-  top: 20px;
+/* Second parallel red ring (slightly further out) */
+.home-img .img-box::after {
+  inset: -13px;
+  opacity: 0.9;
+  animation-duration: 7s; /* slightly slower for depth effect */
 }
 
-@keyframes rotateCircle {
+@keyframes rotateArcs {
   0% {
     transform: rotate(0deg);
   }
@@ -176,18 +305,41 @@ body {
   }
 }
 
+/* ✅ Image setup */
+.home-img .img-item {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: rgb(6, 18, 34);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.home-img .img-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  position: relative;
+  z-index: 3;
+}
+
 /* COMMON SECTION STYLES */
 .section {
   min-height: 100vh;
-  background: rgb(17, 38, 70);
+  background: rgb(6, 18, 34);
   padding: 120px 9%;
   scroll-margin-top: 100px;
 }
 
-.section h2 {
+.section h3 {
   font-size: 38px;
   margin-bottom: 25px;
-  color: greenyellow;
+  color: rgb(176, 206, 174);
 }
 
 .card {
@@ -199,8 +351,8 @@ body {
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
 }
 
-.card h3 {
-  color: greenyellow;
+.card h4 {
+  color: rgb(175, 230, 183);
   margin-bottom: 10px;
 }
 
@@ -215,9 +367,99 @@ body {
 
 /* CONTACT LINKS */
 .card a {
-  color: greenyellow;
+  color: rgb(168, 214, 243);
   text-decoration: none;
 }
 .card a:hover {
   text-decoration: underline;
+}
+
+h3:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+}
+
+/* Reset all headings to normal state */
+h3 {
+  transition: transform 0.3s ease;
+}
+/* Card hover / click (scale-up) effect */
+.card {
+  transition: all 0.4s ease;
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 30px rgba(0, 255, 128, 0.2),
+    inset 0 0 15px rgba(0, 255, 128, 0.1);
+  border-color: rgba(0, 255, 128, 0.4);
+}
+
+/* Optional subtle "press down" effect when clicked */
+.card:active {
+  transform: scale(1.02);
+  box-shadow: 0 0 20px rgba(0, 255, 128, 0.3),
+    inset 0 0 10px rgba(0, 255, 128, 0.2);
+}
+/* Main animated heading */
+.animated-heading {
+  font-size: 30px;
+  font-weight: 600;
+  color: #b2e7ce;
+  text-shadow: 0 0 10px rgba(0, 255, 128, 0.8);
+  display: flex;
+  align-items: baseline; /* ✅ aligns perfectly on one line */
+  gap: 10px;
+}
+
+/* Container for changing words */
+.dynamic-words {
+  position: relative;
+  display: inline-block;
+  width: 250px;
+  height: 1em; /* ✅ slightly increased to give full visibility */
+  overflow: hidden;
+  vertical-align: middle; /* ✅ aligns perfectly with "I'm a" */
+  transform: translateY(-2px); /* ✅ gently pushes it up */
+}
+/* Each word styling */
+.dynamic-words span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  animation: wordChange 4s infinite ease-in-out;
+  color: #00ff88;
+  text-shadow: 0 0 12px #00ff88, 0 0 25px #004d26;
+  font-weight: 600;
+  line-height: 1.2em; /* ✅ keeps it consistent */
+}
+
+/* Delays for each word */
+.dynamic-words span:nth-child(1) {
+  animation-delay: 0s;
+}
+.dynamic-words span:nth-child(2) {
+  animation-delay: 2s;
+}
+
+/* Word animation */
+@keyframes wordChange {
+  0% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  10% {
+    opacity: 1;
+  }
+  40% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
 }
