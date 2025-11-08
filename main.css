@@ -110,7 +110,7 @@ nav {
 }
 
 .home-info h1 {
-  font-size: 45px;
+  font-size: 50px;
   color: rgb(212, 228, 188);
   transition: transform 0.3s ease; /* smooth transition */
 }
@@ -276,13 +276,13 @@ nav {
   border: 3px solid transparent;
   background: conic-gradient(
     from 0deg,
-    #0d4c0d 0deg,
-    #082408 45deg,
+    #029c24 0deg,
+    #086b0f 45deg,
     transparent 90deg,
-    #023902 135deg,
+    #035403 135deg,
     #05361e 180deg,
     transparent 225deg,
-    #043604 270deg,
+    #315c03 270deg,
     #092009 315deg,
     transparent 360deg
   );
@@ -336,8 +336,12 @@ nav {
   scroll-margin-top: 100px;
 }
 
+h3:nth-of-type(2) {
+  margin-top: 30px; /* extra space before Certifications */
+}
+
 .section h3 {
-  font-size: 38px;
+  font-size: 45px;
   margin-bottom: 25px;
   color: rgb(176, 206, 174);
 }
@@ -404,12 +408,11 @@ h3 {
 }
 /* Main animated heading */
 .animated-heading {
-  font-size: 30px;
+  font-size: 2.2rem;
   font-weight: 600;
-  color: #b2e7ce;
-  text-shadow: 0 0 10px rgba(0, 255, 128, 0.8);
+  color: #00ff99;
   display: flex;
-  align-items: baseline; /* ✅ aligns perfectly on one line */
+  align-items: center; /* keeps "I'm a" and dynamic words aligned */
   gap: 10px;
 }
 
@@ -417,7 +420,7 @@ h3 {
 .dynamic-words {
   position: relative;
   display: inline-block;
-  width: 250px;
+  width: 550px;
   height: 1em; /* ✅ slightly increased to give full visibility */
   overflow: hidden;
   vertical-align: middle; /* ✅ aligns perfectly with "I'm a" */
@@ -430,9 +433,9 @@ h3 {
   left: 0;
   opacity: 0;
   animation: wordChange 4s infinite ease-in-out;
-  color: #00ff88;
-  text-shadow: 0 0 12px #00ff88, 0 0 25px #004d26;
-  font-weight: 600;
+  color: #1dcd7b;
+  text-shadow: 0 0 12px #09a45c, 0 0 25px #004d26;
+  font-weight: 800;
   line-height: 1.2em; /* ✅ keeps it consistent */
 }
 
