@@ -164,7 +164,6 @@ nav {
   }
 }
 
-/* Background Animation */
 .bars-animation {
   position: fixed;
   top: 0;
@@ -178,9 +177,9 @@ nav {
 .bars-animation .bar {
   position: absolute;
   width: 100%;
-  height: 2px;
-  background: rgba(255, 255, 255, 0.05);
-  animation: moveBar 4s linear infinite;
+  height: 1px; /* Changed from 2px to 1px */
+  background: rgba(255, 255, 255, 0.02); /* Changed from 0.05 to 0.02 */
+  animation: moveBar 8s linear infinite; /* Slower animation */
 }
 
 .bars-animation .bar:nth-child(1) {
@@ -189,31 +188,39 @@ nav {
 }
 .bars-animation .bar:nth-child(2) {
   top: 25%;
-  animation-delay: 0.5s;
+  animation-delay: 1s;
 }
 .bars-animation .bar:nth-child(3) {
   top: 40%;
-  animation-delay: 1s;
+  animation-delay: 2s;
 }
 .bars-animation .bar:nth-child(4) {
   top: 55%;
-  animation-delay: 1.5s;
+  animation-delay: 3s;
 }
 .bars-animation .bar:nth-child(5) {
   top: 70%;
-  animation-delay: 2s;
+  animation-delay: 4s;
 }
 .bars-animation .bar:nth-child(6) {
   top: 85%;
-  animation-delay: 2.5s;
+  animation-delay: 5s;
 }
 
 @keyframes moveBar {
   0% {
     left: -100%;
+    opacity: 0; /* Fade in */
+  }
+  10% {
+    opacity: 0.5;
+  }
+  90% {
+    opacity: 0.5;
   }
   100% {
     left: 100%;
+    opacity: 0; /* Fade out */
   }
 }
 
@@ -470,7 +477,7 @@ nav {
   z-index: 3;
 }
 
-/* Cards */
+/* ===== ENHANCED CARD HOVER EFFECTS ===== */
 .card {
   background: rgba(255, 255, 255, 0.05);
   border: 2px solid rgba(255, 255, 255, 0.1);
@@ -479,73 +486,90 @@ nav {
   line-height: 1.7;
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
   transition: all 0.4s ease;
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 255, 136, 0.1),
+    transparent
+  );
+  transition: left 0.6s ease;
+}
+
+.card:hover::before {
+  left: 100%;
 }
 
 .card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 0 30px rgba(0, 255, 128, 0.2),
-    inset 0 0 15px rgba(0, 255, 128, 0.1);
-  border-color: rgba(0, 255, 128, 0.4);
+  transform: translateY(-8px);
+  box-shadow: 0 15px 40px rgba(0, 255, 136, 0.15);
+  border-color: rgba(0, 255, 136, 0.3);
 }
 
-.card h4 {
-  color: rgb(175, 230, 183);
-  margin-bottom: 15px;
-  font-size: 1.4rem;
+/* Project item hover effects */
+.project-item {
+  transition: all 0.3s ease;
+  padding: 15px;
+  border-radius: 10px;
 }
 
-.card ul {
-  margin-top: 10px;
-  padding-left: 25px;
+.project-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateX(10px);
 }
 
-.card li {
-  margin-bottom: 10px;
+/* Skill bars hover effect */
+.skill:hover .skill-level {
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
 }
 
-.card a {
-  color: rgb(168, 214, 243);
-  text-decoration: none;
+/* Contact items hover */
+.contact-item:hover {
+  transform: translateX(10px);
+  background: rgba(0, 255, 136, 0.1);
 }
 
-.card a:hover {
-  text-decoration: underline;
-}
-
-/* Animated Heading */
 .animated-heading {
   font-size: 2rem;
   font-weight: 600;
   color: #00ff99;
   display: flex;
-  justify-content: center;
   align-items: center;
   gap: 8px;
   margin-top: 5px;
+  margin-bottom: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
-/* Fix for dynamic words alignment */
 .dynamic-words {
   position: relative;
   display: inline-block;
-  width: 160px; /* Fixed width to prevent layout shift */
+  width: 200px; /* Increased from 160px to 200px */
   height: 1.2em;
-  overflow: hidden;
+  overflow: visible; /* Changed from hidden to visible */
   vertical-align: middle;
-  text-align: left; /* Ensure consistent alignment */
+  text-align: left;
 }
-
 .dynamic-words span {
   position: absolute;
   top: 0;
   left: 0;
-  opacity: 0;
-  animation: wordChange 4s infinite ease-in-out;
-  color: #1dcd7b;
-  text-shadow: 0 0 12px #09a45c, 0 0 25px #004d26;
-  font-weight: 800;
+  color: #04894b;
+  font-weight: 700;
   line-height: 1.2em;
-  width: 100%; /* Ensure span takes full width */
+  white-space: nowrap;
 }
 
 .dynamic-words span:nth-child(1) {
@@ -554,7 +578,6 @@ nav {
 .dynamic-words span:nth-child(2) {
   animation-delay: 2s;
 }
-
 @keyframes wordChange {
   0%,
   40% {
@@ -563,6 +586,36 @@ nav {
   50%,
   100% {
     opacity: 0;
+  }
+}
+/* Fade animation classes */
+.fade-in-word {
+  animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+.fade-out-word {
+  animation: fadeOut 0.5s ease-in-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
   }
 }
 
@@ -819,7 +872,7 @@ nav {
   top: 20px;
   right: 20px;
   background: #061222;
-  color: #00ff88;
+  color: #06af60;
   padding: 12px;
   border-radius: 50%;
   font-size: 20px;
@@ -1497,4 +1550,249 @@ body.loaded .fade-in {
   width: 90%;
   border: 2px solid #00ff88;
   box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
+}
+/* ===== LIGHT MODE STYLES ===== */
+body.light-mode {
+  background: #f8fafc;
+  color: #2d3748;
+  transition: all 0.3s ease;
+}
+
+/* Navigation */
+body.light-mode .navbar {
+  background: #ffffff;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .navbar a {
+  color: #2d3748;
+}
+
+body.light-mode .navbar a:hover,
+body.light-mode .navbar a.active {
+  color: #00a86b;
+}
+
+body.light-mode .navbar a::after {
+  background: #00a86b;
+}
+
+/* Logo */
+body.light-mode .navbar .logo {
+  color: #2d3748;
+}
+
+body.light-mode .navbar .logo:hover {
+  color: #00a86b;
+}
+
+/* Sections */
+body.light-mode .section h3 {
+  color: #22543d;
+}
+
+body.light-mode .section h3:hover {
+  color: #00a86b;
+}
+
+/* Home Section */
+body.light-mode .home-info h1 {
+  color: #22543d;
+}
+
+body.light-mode .home-info h2 {
+  color: #00a86b;
+}
+
+body.light-mode .animated-heading {
+  color: #00a86b;
+}
+
+body.light-mode .dynamic-words span {
+  color: #00a86b;
+  text-shadow: 0 0 12px rgba(0, 168, 107, 0.5);
+}
+
+/* Cards */
+body.light-mode .card {
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  color: #2d3748;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .card:hover {
+  border-color: rgba(0, 168, 107, 0.3);
+  box-shadow: 0 15px 40px rgba(0, 168, 107, 0.15);
+}
+
+body.light-mode .card h4 {
+  color: #22543d;
+}
+
+/* Skills */
+body.light-mode .skill-info {
+  color: #22543d;
+}
+
+body.light-mode .skill-bar {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* Contact Form */
+body.light-mode .contact-form input,
+body.light-mode .contact-form textarea {
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  color: #2d3748;
+}
+
+body.light-mode .contact-form input::placeholder,
+body.light-mode .contact-form textarea::placeholder {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+body.light-mode .contact-form input:focus,
+body.light-mode .contact-form textarea:focus {
+  border-color: #00a86b;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+/* Contact Items */
+body.light-mode .contact-item {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .contact-item:hover {
+  background: rgba(0, 168, 107, 0.1);
+}
+
+body.light-mode .contact-details strong {
+  color: #22543d;
+}
+
+body.light-mode .contact-details a {
+  color: #2c5282;
+}
+
+body.light-mode .contact-details a:hover {
+  color: #00a86b;
+}
+
+/* Background Animation */
+body.light-mode .bars-animation .bar {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* Social Icons */
+body.light-mode .social-icons a {
+  background: radial-gradient(circle at 30% 30%, #e6fffa, #c6f6d5);
+  color: #22543d;
+  box-shadow: 0 0 10px rgba(0, 168, 107, 0.3);
+}
+
+body.light-mode .social-icons a:hover {
+  background: radial-gradient(circle at 70% 30%, #00a86b, #059669);
+  color: white;
+}
+
+/* Buttons */
+body.light-mode .btn-secondary {
+  background: rgba(0, 0, 0, 0.1);
+  color: #2d3748;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+body.light-mode .btn-secondary:hover {
+  background: rgba(0, 0, 0, 0.2);
+  border-color: #00a86b;
+}
+
+/* Contact Stats */
+body.light-mode .contact-stats {
+  background: rgba(0, 0, 0, 0.05);
+  border-left: 3px solid #00a86b;
+}
+
+/* Learning Timeline */
+body.light-mode .learning-item {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .learning-item:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+body.light-mode .item-content h5 {
+  color: #22543d;
+}
+
+body.light-mode .item-content p {
+  color: #4a5568;
+}
+
+/* Skills Gained */
+body.light-mode .skill-tag {
+  background: rgba(0, 168, 107, 0.1);
+  color: #00a86b;
+  border: 1px solid rgba(0, 168, 107, 0.3);
+}
+
+/* Theme Toggle Button - BOTTOM RIGHT CORNER */
+#themeToggle {
+  position: fixed;
+  bottom: 100px; /* Above scroll-to-top button */
+  right: 0px;
+  top: 5px;
+  background: #00ff88;
+  color: #061222;
+  border: none;
+  padding: 7px;
+  border-radius: 50%;
+  font-size: 12px;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+  transition: all 0.3s ease;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#themeToggle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 30px rgba(0, 255, 136, 0.6);
+}
+
+body.light-mode #themeToggle {
+  background: #00a86b;
+  color: white;
+  box-shadow: 0 0 20px rgba(0, 168, 107, 0.4);
+}
+
+body.light-mode #themeToggle:hover {
+  box-shadow: 0 0 30px rgba(0, 168, 107, 0.6);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  #themeToggle {
+    bottom: 90px;
+    right: 20px;
+    width: 45px;
+    height: 45px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  #themeToggle {
+    bottom: 80px;
+    right: 15px;
+    width: 40px;
+    height: 40px;
+    font-size: 14px;
+  }
 }

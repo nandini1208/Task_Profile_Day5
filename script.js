@@ -93,13 +93,13 @@ class ContactManager {
 // ===== INITIALIZE MANAGERS =====
 const contactManager = new ContactManager();
 
-// ===== CONTACT FORM FUNCTIONALITY =====
+// ===== REAL CONTACT FORM INTEGRATION =====
 function initializeContactForm() {
   const contactForm = document.getElementById("contactForm");
 
   if (!contactForm) return;
 
-  contactForm.addEventListener("submit", function (e) {
+  contactForm.addEventListener("submit", async function (e) {
     e.preventDefault();
 
     const name = document.getElementById("name").value;
@@ -116,25 +116,50 @@ function initializeContactForm() {
     submitBtn.textContent = "Sending...";
     submitBtn.disabled = true;
 
-    setTimeout(() => {
-      try {
-        const savedContact = contactManager.saveContact(name, email, message);
+    try {
+      // Using Formspree (FREE service) - Replace with your Formspree ID
+      const response = await emailjs.send(
+        "service_your_service_id", // Replace with your EmailJS service ID
+        "template_your_template_id", // Replace with your EmailJS template ID
+        {
+          from_name: name,
+          from_email: email,
+          message: message,
+          to_name: "Nandini",
+        }
+      );
+
+      if (response.status === 200) {
         showMessage(
           "Message sent successfully! I will get back to you soon.",
           "success"
         );
+        contactForm.reset();
 
+        // Also save locally for demo
+        contactManager.saveContact(name, email, message);
         updateContactStats();
         updateNavCounter();
-        contactForm.reset();
-      } catch (error) {
-        showMessage("Error saving message. Please try again.", "error");
-        console.error("Contact save error:", error);
-      } finally {
-        submitBtn.textContent = originalText;
-        submitBtn.disabled = false;
+      } else {
+        throw new Error("Failed to send message");
       }
-    }, 1000);
+    } catch (error) {
+      console.error("Contact form error:", error);
+      showMessage(
+        "Error sending message. Please try again or email me directly.",
+        "error"
+      );
+
+      // Fallback: Save locally
+      contactManager.saveContact(name, email, message);
+      showMessage("Message saved locally. I'll check it soon!", "info");
+      updateContactStats();
+      updateNavCounter();
+      contactForm.reset();
+    } finally {
+      submitBtn.textContent = originalText;
+      submitBtn.disabled = false;
+    }
   });
 
   // Real-time validation
@@ -142,6 +167,12 @@ function initializeContactForm() {
   inputs.forEach((input) => {
     input.addEventListener("blur", function () {
       validateField(this);
+    });
+
+    input.addEventListener("input", function () {
+      if (this.value.trim()) {
+        this.style.borderColor = "#00ff88";
+      }
     });
   });
 }
@@ -233,41 +264,38 @@ function updateNavCounter() {
   }
 }
 
-// ===== ENHANCED NAVIGATION =====
 function initializeEnhancedNavHighlight() {
   const sections = document.querySelectorAll("section");
   const navLinks = document.querySelectorAll('.navbar a[href^="#"]');
 
-  if (sections.length === 0 || navLinks.length === 0) return;
+  function updateActiveNav() {
+    let current = "";
+    const scrollPosition = window.scrollY + 150;
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      let currentActive = null;
+    sections.forEach((section) => {
+      const sectionTop = section.offsetTop;
+      const sectionHeight = section.clientHeight;
 
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          currentActive = entry.target;
-        }
-      });
-
-      if (currentActive) {
-        const currentId = currentActive.getAttribute("id");
-
-        navLinks.forEach((link) => {
-          link.classList.remove("active");
-          if (link.getAttribute("href") === `#${currentId}`) {
-            link.classList.add("active");
-          }
-        });
+      if (
+        scrollPosition >= sectionTop &&
+        scrollPosition < sectionTop + sectionHeight
+      ) {
+        current = section.getAttribute("id");
       }
-    },
-    {
-      threshold: 0.3,
-      rootMargin: "-100px 0px -40% 0px",
-    }
-  );
+    });
 
-  sections.forEach((section) => observer.observe(section));
+    // Update active class
+    navLinks.forEach((link) => {
+      link.classList.remove("active");
+      if (link.getAttribute("href") === `#${current}`) {
+        link.classList.add("active");
+      }
+    });
+  }
+
+  // Listen for scroll events
+  window.addEventListener("scroll", updateActiveNav);
+  window.addEventListener("load", updateActiveNav);
 }
 
 function initializeEnhancedSmoothScroll() {
@@ -728,17 +756,37 @@ function initializeTypingAnimation() {
   const dynamicWords = document.querySelector(".dynamic-words");
   if (!dynamicWords) return;
 
-  // Just ensure the HTML structure is correct
-  // The animation is handled by CSS
-  dynamicWords.innerHTML = `
-    <span>Software</span>
-    <span>Developer</span>
-  `;
+  const words = ["Software Developer", "Problem Solver", "Full Stack Engineer"];
+  let currentIndex = 0;
+
+  // Set initial word with fade class
+  dynamicWords.innerHTML = `<span class="fade-in-word">${words[0]}</span>`;
+
+  function rotateWords() {
+    const currentSpan = dynamicWords.querySelector("span");
+
+    // Add fade out effect
+    currentSpan.classList.remove("fade-in-word");
+    currentSpan.classList.add("fade-out-word");
+
+    setTimeout(() => {
+      currentIndex = (currentIndex + 1) % words.length;
+      currentSpan.textContent = words[currentIndex];
+
+      // Add fade in effect
+      currentSpan.classList.remove("fade-out-word");
+      currentSpan.classList.add("fade-in-word");
+    }, 500);
+  }
+
+  // Change word every 2.5 seconds
+  setInterval(rotateWords, 2500);
 }
 
 // ===== INITIALIZE EVERYTHING =====
 document.addEventListener("DOMContentLoaded", function () {
   // Initialize all components
+  initializeTheme();
   initializeMobileMenu();
   initializeEnhancedNavHighlight();
   initializeEnhancedSmoothScroll();
@@ -763,3 +811,36 @@ window.addEventListener("error", function (e) {
 
 // Initialize contact counter
 updateNavCounter();
+// ===== THEME TOGGLE FUNCTIONALITY =====
+function initializeTheme() {
+  // Create theme toggle button
+  const themeToggle = document.createElement("button");
+  themeToggle.id = "themeToggle";
+  themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+  themeToggle.setAttribute("aria-label", "Toggle theme");
+  themeToggle.title = "Toggle dark/light mode";
+  document.body.appendChild(themeToggle);
+
+  // Check for saved theme or prefer-color-scheme
+  const savedTheme = localStorage.getItem("portfolio-theme");
+  const systemPrefersDark = window.matchMedia(
+    "(prefers-color-scheme: dark)"
+  ).matches;
+
+  // Set initial theme
+  if (savedTheme === "light" || (!savedTheme && !systemPrefersDark)) {
+    document.body.classList.add("light-mode");
+    themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+  }
+
+  themeToggle.addEventListener("click", function () {
+    document.body.classList.toggle("light-mode");
+    const isLight = document.body.classList.contains("light-mode");
+
+    themeToggle.innerHTML = isLight
+      ? '<i class="fas fa-sun"></i>'
+      : '<i class="fas fa-moon"></i>';
+
+    localStorage.setItem("portfolio-theme", isLight ? "light" : "dark");
+  });
+}
