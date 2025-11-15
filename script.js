@@ -1,0 +1,765 @@
+// script.js
+
+// ===== CONTACT MANAGER CLASS WITH AUTHENTICATION =====
+class ContactManager {
+  constructor() {
+    this.storageKey = "portfolio_contacts";
+    this.adminPassword = "nandini@123"; // ⚠️ CHANGE THIS PASSWORD!
+    this.init();
+  }
+
+  init() {
+    if (!localStorage.getItem(this.storageKey)) {
+      localStorage.setItem(this.storageKey, JSON.stringify([]));
+    }
+  }
+
+  // Authentication method
+  authenticate(password) {
+    return password === this.adminPassword;
+  }
+
+  // Save contact (no auth needed - anyone can send messages)
+  saveContact(name, email, message) {
+    const contacts = this.getContactsWithoutAuth();
+    const newContact = {
+      id: Date.now(),
+      name: name.trim(),
+      email: email.trim(),
+      message: message.trim(),
+      timestamp: new Date().toLocaleString("en-IN", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+      status: "unread",
+    };
+
+    contacts.push(newContact);
+    localStorage.setItem(this.storageKey, JSON.stringify(contacts));
+    return newContact;
+  }
+
+  // Get contacts WITHOUT authentication (for counting)
+  getContactsWithoutAuth() {
+    return JSON.parse(localStorage.getItem(this.storageKey) || "[]");
+  }
+
+  // Get contacts WITH authentication (for viewing details)
+  getContactsWithAuth(password) {
+    if (!this.authenticate(password)) {
+      throw new Error("Authentication required");
+    }
+    return this.getContactsWithoutAuth();
+  }
+
+  // Public method - anyone can see the count
+  getContactCount() {
+    const contacts = this.getContactsWithoutAuth();
+    return contacts.length;
+  }
+
+  // Public method - anyone can see unread count
+  getUnreadCount() {
+    const contacts = this.getContactsWithoutAuth();
+    return contacts.filter((contact) => contact.status === "unread").length;
+  }
+
+  // Admin only methods
+  markAsRead(contactId, password) {
+    if (!this.authenticate(password)) return;
+
+    const contacts = this.getContactsWithoutAuth();
+    const updatedContacts = contacts.map((contact) =>
+      contact.id === contactId ? { ...contact, status: "read" } : contact
+    );
+    localStorage.setItem(this.storageKey, JSON.stringify(updatedContacts));
+  }
+
+  deleteContact(contactId, password) {
+    if (!this.authenticate(password)) return;
+
+    const contacts = this.getContactsWithoutAuth();
+    const filteredContacts = contacts.filter(
+      (contact) => contact.id !== contactId
+    );
+    localStorage.setItem(this.storageKey, JSON.stringify(filteredContacts));
+    return filteredContacts;
+  }
+}
+
+// ===== INITIALIZE MANAGERS =====
+const contactManager = new ContactManager();
+
+// ===== CONTACT FORM FUNCTIONALITY =====
+function initializeContactForm() {
+  const contactForm = document.getElementById("contactForm");
+
+  if (!contactForm) return;
+
+  contactForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    const message = document.getElementById("message").value;
+
+    if (!validateForm(name, email, message)) {
+      return;
+    }
+
+    // Show loading state
+    const submitBtn = contactForm.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = "Sending...";
+    submitBtn.disabled = true;
+
+    setTimeout(() => {
+      try {
+        const savedContact = contactManager.saveContact(name, email, message);
+        showMessage(
+          "Message sent successfully! I will get back to you soon.",
+          "success"
+        );
+
+        updateContactStats();
+        updateNavCounter();
+        contactForm.reset();
+      } catch (error) {
+        showMessage("Error saving message. Please try again.", "error");
+        console.error("Contact save error:", error);
+      } finally {
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+      }
+    }, 1000);
+  });
+
+  // Real-time validation
+  const inputs = contactForm.querySelectorAll("input, textarea");
+  inputs.forEach((input) => {
+    input.addEventListener("blur", function () {
+      validateField(this);
+    });
+  });
+}
+
+function validateField(field) {
+  const value = field.value.trim();
+
+  if (field.type === "email" && value) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(value)) {
+      field.style.borderColor = "#ff4444";
+    } else {
+      field.style.borderColor = "#00ff88";
+    }
+  }
+}
+
+function validateForm(name, email, message) {
+  if (!name.trim() || !email.trim() || !message.trim()) {
+    showMessage("Please fill in all fields.", "error");
+    return false;
+  }
+
+  if (name.trim().length < 2) {
+    showMessage("Please enter a valid name.", "error");
+    return false;
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    showMessage("Please enter a valid email address.", "error");
+    return false;
+  }
+
+  if (message.trim().length < 10) {
+    showMessage("Message should be at least 10 characters long.", "error");
+    return false;
+  }
+
+  return true;
+}
+
+function showMessage(text, type) {
+  const formMessage = document.getElementById("formMessage");
+  if (!formMessage) return;
+
+  formMessage.textContent = text;
+  formMessage.className = `message ${type}`;
+
+  if (type === "success") {
+    setTimeout(() => {
+      formMessage.textContent = "";
+      formMessage.className = "";
+    }, 5000);
+  }
+}
+
+function updateContactStats() {
+  const messageCount = document.getElementById("messageCount");
+  if (messageCount) {
+    messageCount.textContent = contactManager.getContactCount();
+  }
+}
+
+// Smart Counter - Shows temporarily for new messages
+function updateNavCounter() {
+  const contactLink = document.querySelector('a[href="#contact"]');
+  if (!contactLink) return;
+
+  let counter = contactLink.querySelector(".contact-counter");
+  const contactCount = contactManager.getContactCount();
+
+  if (contactCount > 0) {
+    if (!counter) {
+      counter = document.createElement("span");
+      counter.className = "contact-counter";
+      contactLink.appendChild(counter);
+    }
+    counter.textContent = contactCount;
+
+    // Auto-hide after 5 seconds
+    setTimeout(() => {
+      if (counter && counter.parentNode) {
+        counter.remove();
+      }
+    }, 5000);
+  } else if (counter) {
+    counter.remove();
+  }
+}
+
+// ===== ENHANCED NAVIGATION =====
+function initializeEnhancedNavHighlight() {
+  const sections = document.querySelectorAll("section");
+  const navLinks = document.querySelectorAll('.navbar a[href^="#"]');
+
+  if (sections.length === 0 || navLinks.length === 0) return;
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      let currentActive = null;
+
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          currentActive = entry.target;
+        }
+      });
+
+      if (currentActive) {
+        const currentId = currentActive.getAttribute("id");
+
+        navLinks.forEach((link) => {
+          link.classList.remove("active");
+          if (link.getAttribute("href") === `#${currentId}`) {
+            link.classList.add("active");
+          }
+        });
+      }
+    },
+    {
+      threshold: 0.3,
+      rootMargin: "-100px 0px -40% 0px",
+    }
+  );
+
+  sections.forEach((section) => observer.observe(section));
+}
+
+function initializeEnhancedSmoothScroll() {
+  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+    anchor.addEventListener("click", function (e) {
+      e.preventDefault();
+      const targetId = this.getAttribute("href");
+      if (targetId === "#") return;
+
+      const targetElement = document.querySelector(targetId);
+      if (targetElement) {
+        const navbarHeight = document.querySelector(".navbar").offsetHeight;
+        const targetPosition = targetElement.offsetTop - navbarHeight - 20;
+
+        smoothScrollTo(targetPosition, 800);
+        history.pushState(null, null, targetId);
+      }
+    });
+  });
+}
+
+function smoothScrollTo(targetPosition, duration) {
+  const startPosition = window.pageYOffset;
+  const distance = targetPosition - startPosition;
+  let startTime = null;
+
+  function animation(currentTime) {
+    if (startTime === null) startTime = currentTime;
+    const timeElapsed = currentTime - startTime;
+    const run = easeInOutQuad(timeElapsed, startPosition, distance, duration);
+    window.scrollTo(0, run);
+    if (timeElapsed < duration) requestAnimationFrame(animation);
+  }
+
+  function easeInOutQuad(t, b, c, d) {
+    t /= d / 2;
+    if (t < 1) return (c / 2) * t * t + b;
+    t--;
+    return (-c / 2) * (t * (t - 2) - 1) + b;
+  }
+
+  requestAnimationFrame(animation);
+}
+
+// ===== MOBILE MENU =====
+function initializeMobileMenu() {
+  const navToggle = document.querySelector(".nav-toggle");
+  const navUl = document.querySelector(".navbar ul");
+
+  if (!navToggle || !navUl) {
+    console.warn("Mobile menu elements not found");
+    return;
+  }
+
+  navToggle.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const isExpanded = navToggle.getAttribute("aria-expanded") === "true";
+
+    navToggle.setAttribute("aria-expanded", String(!isExpanded));
+    navToggle.classList.toggle("open");
+    navUl.classList.toggle("open");
+
+    // Prevent body scroll when menu is open
+    document.body.style.overflow = navUl.classList.contains("open")
+      ? "hidden"
+      : "";
+  });
+
+  // Close menu when clicking on links
+  navUl.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => {
+      navUl.classList.remove("open");
+      navToggle.classList.remove("open");
+      navToggle.setAttribute("aria-expanded", "false");
+      document.body.style.overflow = "";
+    });
+  });
+
+  // Close menu when clicking outside
+  document.addEventListener("click", (e) => {
+    if (!navUl.contains(e.target) && !navToggle.contains(e.target)) {
+      navUl.classList.remove("open");
+      navToggle.classList.remove("open");
+      navToggle.setAttribute("aria-expanded", "false");
+      document.body.style.overflow = "";
+    }
+  });
+
+  // Close menu on escape key
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && navUl.classList.contains("open")) {
+      navUl.classList.remove("open");
+      navToggle.classList.remove("open");
+      navToggle.setAttribute("aria-expanded", "false");
+      document.body.style.overflow = "";
+    }
+  });
+}
+
+// ===== SKILLS ANIMATION =====
+function initializeSkillsAnimation() {
+  const skillLevels = document.querySelectorAll(".skill-level");
+  const skillPercents = document.querySelectorAll(".skill-percent");
+
+  if (skillLevels.length === 0) return;
+
+  let animated = false;
+
+  function animateSkills() {
+    skillLevels.forEach((level, index) => {
+      const levelValue = level.getAttribute("data-level");
+      const percentElement = skillPercents[index];
+
+      if (!levelValue || !percentElement) return;
+
+      const targetPercent = parseInt(levelValue);
+      let currentPercent = 0;
+      const duration = 1500;
+      const increment = targetPercent / (duration / 16);
+
+      const animate = () => {
+        if (currentPercent < targetPercent) {
+          currentPercent += increment;
+          percentElement.textContent = Math.round(currentPercent) + "%";
+          level.style.width = currentPercent + "%";
+          requestAnimationFrame(animate);
+        } else {
+          percentElement.textContent = targetPercent + "%";
+          level.style.width = levelValue;
+        }
+      };
+
+      animate();
+    });
+  }
+
+  function checkSkillsVisibility() {
+    const skillsSection = document.getElementById("skills");
+    if (!animated && skillsSection) {
+      const sectionTop = skillsSection.getBoundingClientRect().top;
+      if (sectionTop < window.innerHeight - 100) {
+        animateSkills();
+        animated = true;
+        window.removeEventListener("scroll", checkSkillsVisibility);
+      }
+    }
+  }
+
+  window.addEventListener("scroll", checkSkillsVisibility);
+  checkSkillsVisibility(); // Check on load
+}
+
+// ===== PROJECT FILTERING =====
+function initializeProjectFilter() {
+  const filterBtns = document.querySelectorAll(".filter-btn");
+  const projectItems = document.querySelectorAll(".project-item");
+
+  if (filterBtns.length === 0 || projectItems.length === 0) return;
+
+  filterBtns.forEach((btn) => {
+    btn.addEventListener("click", function () {
+      // Remove active class from all buttons
+      filterBtns.forEach((b) => b.classList.remove("active"));
+
+      // Add active class to clicked button
+      this.classList.add("active");
+
+      const filter = this.getAttribute("data-filter");
+      filterProjects(filter, projectItems);
+    });
+  });
+}
+
+function filterProjects(filter, projectItems) {
+  projectItems.forEach((item) => {
+    const tech = item.getAttribute("data-tech");
+    const shouldShow = filter === "all" || (tech && tech.includes(filter));
+
+    if (shouldShow) {
+      item.style.display = "block";
+      // Force reflow
+      void item.offsetHeight;
+      item.style.opacity = "1";
+      item.style.transform = "translateY(0)";
+    } else {
+      item.style.opacity = "0";
+      item.style.transform = "translateY(20px)";
+      setTimeout(() => {
+        if (item.style.opacity === "0") {
+          item.style.display = "none";
+        }
+      }, 300);
+    }
+  });
+}
+
+// ===== SCROLL TO TOP =====
+function initializeScrollToTop() {
+  const scrollTopBtn = document.getElementById("scrollTopBtn");
+
+  if (!scrollTopBtn) return;
+
+  function toggleScrollButton() {
+    if (window.pageYOffset > 200) {
+      scrollTopBtn.style.display = "block";
+    } else {
+      scrollTopBtn.style.display = "none";
+    }
+  }
+
+  scrollTopBtn.addEventListener("click", () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  });
+
+  window.addEventListener("scroll", toggleScrollButton);
+  toggleScrollButton();
+}
+
+// ===== SCROLL PROGRESS =====
+function initializeScrollProgress() {
+  // Check if already exists
+  if (document.querySelector(".scroll-progress")) return;
+
+  const progressBar = document.createElement("div");
+  progressBar.className = "scroll-progress";
+  document.body.appendChild(progressBar);
+
+  const updateProgress = () => {
+    const windowHeight =
+      document.documentElement.scrollHeight - window.innerHeight;
+    const scrolled = (window.scrollY / windowHeight) * 100;
+    progressBar.style.width = `${scrolled}%`;
+  };
+
+  window.addEventListener("scroll", updateProgress);
+  updateProgress(); // Initial call
+}
+
+// ===== PASSWORD PROTECTED MESSAGES VIEW =====
+function initializeMessagesModal() {
+  const viewMessagesBtn = document.getElementById("viewMessagesBtn");
+  if (viewMessagesBtn) {
+    viewMessagesBtn.addEventListener("click", function () {
+      showPasswordModal();
+    });
+  }
+}
+
+function showPasswordModal() {
+  const modalOverlay = document.createElement("div");
+  modalOverlay.className = "modal-overlay";
+
+  modalOverlay.innerHTML = `
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3 style="color: #00ff88; margin: 0;">Admin Access</h3>
+        <button id="closeModal" style="background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; padding: 5px; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;">×</button>
+      </div>
+      <p style="margin-bottom: 20px; color: #ccc;">Enter admin password to view messages</p>
+      <input type="password" id="adminPassword" placeholder="Enter admin password" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); border-radius: 8px; color: white; margin-bottom: 15px;" />
+      <button id="submitPassword" class="btn" style="width: 100%;">View Messages</button>
+      <div id="passwordMessage" style="margin-top: 15px;"></div>
+    </div>
+  `;
+
+  document.body.appendChild(modalOverlay);
+
+  // Close modal
+  document.getElementById("closeModal").addEventListener("click", function () {
+    document.body.removeChild(modalOverlay);
+  });
+
+  // Submit password
+  document
+    .getElementById("submitPassword")
+    .addEventListener("click", function () {
+      const password = document.getElementById("adminPassword").value;
+      const passwordMessage = document.getElementById("passwordMessage");
+
+      if (!password) {
+        passwordMessage.textContent = "Please enter password!";
+        passwordMessage.className = "message error";
+        return;
+      }
+
+      try {
+        const contacts = contactManager.getContactsWithAuth(password);
+        document.body.removeChild(modalOverlay);
+
+        if (contacts.length === 0) {
+          showMessage("No messages received yet.", "info");
+        } else {
+          showMessagesModal(contacts, password);
+        }
+      } catch (error) {
+        passwordMessage.textContent = "Incorrect password!";
+        passwordMessage.className = "message error";
+        document.getElementById("adminPassword").value = "";
+        document.getElementById("adminPassword").focus();
+      }
+    });
+
+  // Close on overlay click
+  modalOverlay.addEventListener("click", function (e) {
+    if (e.target === modalOverlay) {
+      document.body.removeChild(modalOverlay);
+    }
+  });
+
+  // Enter key support
+  document
+    .getElementById("adminPassword")
+    .addEventListener("keypress", function (e) {
+      if (e.key === "Enter") {
+        document.getElementById("submitPassword").click();
+      }
+    });
+}
+
+// Updated showMessagesModal function with admin controls
+function showMessagesModal(contacts, password) {
+  const modalOverlay = document.createElement("div");
+  modalOverlay.className = "modal-overlay";
+
+  const modalContent = document.createElement("div");
+  modalContent.className = "modal-content";
+
+  modalContent.innerHTML = `
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <h3 style="color: #00ff88; margin: 0;">Received Messages (${
+        contacts.length
+      })</h3>
+      <button id="closeModal" style="background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; padding: 5px; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;">×</button>
+    </div>
+    <div style="margin-bottom: 15px; color: #ccc; font-size: 14px;">
+      Unread: ${contactManager.getUnreadCount()} | Total: ${contactManager.getContactCount()}
+    </div>
+    <div id="messagesList"></div>
+  `;
+
+  const messagesList = modalContent.querySelector("#messagesList");
+
+  contacts.reverse().forEach((contact) => {
+    const messageItem = document.createElement("div");
+    messageItem.className = `message-item ${
+      contact.status === "unread" ? "unread" : ""
+    }`;
+    messageItem.innerHTML = `
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+        <div>
+          <strong style="color: #00ff88;">${contact.name}</strong>
+          ${
+            contact.status === "unread"
+              ? '<span style="background: #00ff88; color: #061222; padding: 2px 8px; border-radius: 10px; font-size: 12px; margin-left: 10px;">NEW</span>'
+              : ""
+          }
+        </div>
+        <small style="color: #888;">${contact.timestamp}</small>
+      </div>
+      <div style="color: #ccc; font-size: 14px; margin-bottom: 5px;">${
+        contact.email
+      }</div>
+      <div style="color: #fff; margin-top: 10px; line-height: 1.5;">${
+        contact.message
+      }</div>
+      <div style="margin-top: 10px; display: flex; gap: 10px;">
+        ${
+          contact.status === "unread"
+            ? `<button class="mark-read-btn" data-id="${contact.id}">Mark Read</button>`
+            : ""
+        }
+        <button class="delete-btn" data-id="${
+          contact.id
+        }" style="color: #ff6b6b;">Delete</button>
+      </div>
+    `;
+
+    messagesList.appendChild(messageItem);
+  });
+
+  // Close modal
+  modalContent
+    .querySelector("#closeModal")
+    .addEventListener("click", function () {
+      document.body.removeChild(modalOverlay);
+      updateContactStats();
+    });
+
+  // Mark as read functionality
+  modalContent.querySelectorAll(".mark-read-btn").forEach((btn) => {
+    btn.addEventListener("click", function () {
+      const contactId = parseInt(this.getAttribute("data-id"));
+      contactManager.markAsRead(contactId, password);
+      this.closest(".message-item").classList.remove("unread");
+      this.remove();
+      updateContactStats();
+    });
+  });
+
+  // Delete functionality
+  modalContent.querySelectorAll(".delete-btn").forEach((btn) => {
+    btn.addEventListener("click", function () {
+      const contactId = parseInt(this.getAttribute("data-id"));
+      contactManager.deleteContact(contactId, password);
+      this.closest(".message-item").remove();
+      updateContactStats();
+
+      // Update modal title with new count
+      const remainingContacts = contactManager.getContactsWithAuth(password);
+      modalContent.querySelector(
+        "h3"
+      ).textContent = `Received Messages (${remainingContacts.length})`;
+    });
+  });
+
+  modalOverlay.addEventListener("click", function (e) {
+    if (e.target === modalOverlay) {
+      document.body.removeChild(modalOverlay);
+      updateContactStats();
+    }
+  });
+
+  modalOverlay.appendChild(modalContent);
+  document.body.appendChild(modalOverlay);
+}
+
+// ===== PAGE LOAD ANIMATIONS =====
+function initializePageAnimations() {
+  document.body.classList.add("loaded");
+
+  const animatedElements = document.querySelectorAll(".fade-in");
+  animatedElements.forEach((element, index) => {
+    setTimeout(() => {
+      element.style.opacity = "1";
+      element.style.transform = "translateY(0)";
+    }, index * 200);
+  });
+}
+
+// ===== CIRCLE ICONS ANIMATION =====
+function initializeCircleIcons() {
+  document.querySelectorAll(".icon").forEach((icon) => {
+    icon.addEventListener("mouseover", () => {
+      icon.style.transform = "scale(1.1)";
+      icon.style.boxShadow = "0 0 25px #00ff88";
+    });
+    icon.addEventListener("mouseout", () => {
+      icon.style.transform = "scale(1)";
+      icon.style.boxShadow = "0 0 15px rgba(0,255,136,0.4)";
+    });
+  });
+}
+
+function initializeTypingAnimation() {
+  const dynamicWords = document.querySelector(".dynamic-words");
+  if (!dynamicWords) return;
+
+  // Just ensure the HTML structure is correct
+  // The animation is handled by CSS
+  dynamicWords.innerHTML = `
+    <span>Software</span>
+    <span>Developer</span>
+  `;
+}
+
+// ===== INITIALIZE EVERYTHING =====
+document.addEventListener("DOMContentLoaded", function () {
+  // Initialize all components
+  initializeMobileMenu();
+  initializeEnhancedNavHighlight();
+  initializeEnhancedSmoothScroll();
+  initializeContactForm();
+  initializeMessagesModal();
+  updateContactStats();
+  initializeSkillsAnimation();
+  initializeProjectFilter();
+  initializeScrollToTop();
+  initializeScrollProgress();
+  initializePageAnimations();
+  initializeCircleIcons();
+  initializeTypingAnimation();
+
+  console.log("Portfolio initialized successfully!");
+});
+
+// ===== ERROR HANDLING =====
+window.addEventListener("error", function (e) {
+  console.error("JavaScript Error:", e.error);
+});
+
+// Initialize contact counter
+updateNavCounter();

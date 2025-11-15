@@ -3,29 +3,35 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Nandini_Gupta_Profile</title>
+    <title>Nandini Gupta - Portfolio</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
     />
-
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
       rel="stylesheet"
     />
-
     <link rel="stylesheet" href="main.css" />
   </head>
   <body>
     <nav class="navbar">
       <a href="#home" class="logo">Portfolio</a>
+      <button
+        class="nav-toggle"
+        aria-label="Toggle navigation"
+        aria-expanded="false"
+      >
+        <span class="burger"></span>
+      </button>
+
       <ul>
         <li><a href="#home" class="active">Home</a></li>
-        <li><a href="#experience">Professional Experience</a></li>
+        <li><a href="#experience">Experience</a></li>
         <li><a href="#projects">Projects</a></li>
-        <li><a href="#skills">Technical Skills</a></li>
-        <li><a href="#education">Education & Certifications</a></li>
-        <li><a href="#thinkbridge">Thinkbridge Learning</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#education">Education</a></li>
+        <li><a href="#thinkbridge">Learning</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
     </nav>
@@ -45,25 +51,21 @@
         <h2 class="animated-heading">
           I'm a
           <span class="dynamic-words">
-            <span>Software</span>
-            <span>Developer</span>
+            <span>Software Developer</span>
           </span>
         </h2>
 
         <p>
-          Hello! I’m Nandini Gupta, a dedicated Software Engineer with a strong
+          Hello! I'm Nandini Gupta, a dedicated Software Engineer with a strong
           foundation in .NET development, API integration, and web technologies.
           I enjoy transforming complex requirements into efficient, scalable,
           and maintainable solutions. My journey as a developer has strengthened
           my expertise in problem-solving, backend automation, and
-          client-focused delivery. I’m passionate about learning new
-          technologies, optimizing system performance, and building products
-          that truly make an impact.
+          client-focused delivery.
         </p>
 
         <div class="btn-sci">
           <a href="Nandini_Gupta_CV.pdf" target="_blank" class="btn">View CV</a>
-
           <div class="social-icons">
             <a href="mailto:nandiniguptait1@gmail.com" target="_blank">
               <i class="fa-solid fa-envelope"></i>
@@ -99,22 +101,22 @@
         <ul>
           <li>
             Client point of contact for a high-profile project involving 2000+
-            large-scale web scrapers in C#/.NET.
+            large-scale web scrapers in C#/.NET
           </li>
           <li>
             Improved application performance by 25% via caching and
-            multi-threaded logic.
+            multi-threaded logic
           </li>
           <li>
-            Built monitoring and maintenance workflows ensuring fault tolerance.
+            Built monitoring and maintenance workflows ensuring fault tolerance
           </li>
           <li>
             Collaborated with international clients for requirement gathering
-            and sprint planning.
+            and sprint planning
           </li>
           <li>
             Promoted from intern to full-time developer for delivering scalable
-            solutions.
+            solutions
           </li>
         </ul>
       </div>
@@ -122,66 +124,137 @@
 
     <section id="projects" class="section fade-in">
       <h3>Projects</h3>
+
+      <div class="project-filters">
+        <button class="filter-btn active" data-filter="all">
+          All Projects
+        </button>
+        <button class="filter-btn" data-filter="csharp">C# Projects</button>
+        <button class="filter-btn" data-filter="web">Web Projects</button>
+        <button class="filter-btn" data-filter="database">Database</button>
+      </div>
+
       <div class="card">
-        <h4>Recruitment Management System (C#, MySQL)</h4>
-        <ul>
-          <li>
-            Platform for managing job applications and recruitment workflows
-            with authentication.
-          </li>
-          <li>
-            Implemented candidate profiling, scheduling, and secure MySQL
-            backend.
-          </li>
-        </ul>
+        <div class="project-item" data-tech="csharp database">
+          <h4>Recruitment Management System (C#, MySQL)</h4>
+          <ul>
+            <li>
+              Platform for managing job applications and recruitment workflows
+              with authentication
+            </li>
+            <li>
+              Implemented candidate profiling, scheduling, and secure MySQL
+              backend
+            </li>
+          </ul>
+        </div>
 
-        <h4>Sanchar – A Microblogging Site (C#, MySQL)</h4>
-        <ul>
-          <li>
-            Users can post, share, and interact with authentication and comments
-            system.
-          </li>
-          <li>
-            Added image/file uploads, secure login, and relational DB design.
-          </li>
-        </ul>
+        <div class="project-item" data-tech="csharp web database">
+          <h4>Sanchar – A Microblogging Site (C#, MySQL)</h4>
+          <ul>
+            <li>
+              Users can post, share, and interact with authentication and
+              comments system
+            </li>
+            <li>
+              Added image/file uploads, secure login, and relational DB design
+            </li>
+          </ul>
+        </div>
 
-        <h4>Health Stack System (C#, MySQL)</h4>
-        <ul>
-          <li>
-            EHR, billing, and appointment modules using .NET CRUD logic and
-            stored procedures.
-          </li>
-          <li>
-            Applied validation and exception handling to enhance reliability.
-          </li>
-        </ul>
+        <div class="project-item" data-tech="csharp database">
+          <h4>Health Stack System (C#, MySQL)</h4>
+          <ul>
+            <li>
+              EHR, billing, and appointment modules using .NET CRUD logic and
+              stored procedures
+            </li>
+            <li>
+              Applied validation and exception handling to enhance reliability
+            </li>
+          </ul>
+        </div>
       </div>
     </section>
 
     <section id="skills" class="section fade-in">
       <h3>Technical Skills</h3>
       <div class="card">
-        <p>
-          <strong>Languages & Frameworks :</strong> C#, Python, JavaScript,
-          .NET, Entity Framework
-        </p>
-        <p><strong>Databases :</strong> MySQL, SQL Server</p>
-        <p>
-          <strong>Web & Tools :</strong> Git, Postman, Visual Studio, HTML/CSS,
-          JSON
-        </p>
-        <p>
-          <strong>Other :</strong> API Integration, Web Scraping
-          (HtmlAgilityPack), Data Validation
-        </p>
-        <p>
-          <strong>Soft Skills :</strong> Problem-Solving, Client Communication,
-          Cross-Team Collaboration
-        </p>
+        <div class="skills-container">
+          <div class="skill">
+            <div class="skill-info">
+              <span>HTML/CSS</span>
+              <span class="skill-percent">0%</span>
+            </div>
+            <div class="skill-bar">
+              <div class="skill-level" data-level="90%"></div>
+            </div>
+          </div>
+
+          <div class="skill">
+            <div class="skill-info">
+              <span>JavaScript</span>
+              <span class="skill-percent">0%</span>
+            </div>
+            <div class="skill-bar">
+              <div class="skill-level" data-level="80%"></div>
+            </div>
+          </div>
+
+          <div class="skill">
+            <div class="skill-info">
+              <span>C# & .NET</span>
+              <span class="skill-percent">0%</span>
+            </div>
+            <div class="skill-bar">
+              <div class="skill-level" data-level="90%"></div>
+            </div>
+          </div>
+
+          <div class="skill">
+            <div class="skill-info">
+              <span>MySQL</span>
+              <span class="skill-percent">0%</span>
+            </div>
+            <div class="skill-bar">
+              <div class="skill-level" data-level="85%"></div>
+            </div>
+          </div>
+
+          <div class="skill">
+            <div class="skill-info">
+              <span>API Integration</span>
+              <span class="skill-percent">0%</span>
+            </div>
+            <div class="skill-bar">
+              <div class="skill-level" data-level="75%"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="skills-summary">
+          <p>
+            <strong>Languages & Frameworks:</strong> C#, Python, JavaScript,
+            .NET, Entity Framework
+          </p>
+          <p><strong>Databases:</strong> MySQL, SQL Server</p>
+          <p>
+            <strong>Web & Tools:</strong> Git, Postman, Visual Studio, HTML/CSS,
+            JSON
+          </p>
+          <p>
+            <strong>Other:</strong> API Integration, Web Scraping
+            (HtmlAgilityPack), Data Validation
+          </p>
+          <p>
+            <strong>Soft Skills:</strong> Problem-Solving, Client Communication,
+            Cross-Team Collaboration
+          </p>
+        </div>
       </div>
     </section>
 
+    <
     <section id="education" class="section fade-in">
       <h3>Education & Certifications</h3>
       <div class="card">
@@ -189,6 +262,8 @@
         <p>
           <strong>P.S.I.T., Kanpur</strong> — Master of Computer Applications
         </p>
+        <br />
+
         <p>
           <strong>U.I.E.T., Kanpur</strong> — Bachelor of Computer Applications
         </p>
@@ -196,67 +271,226 @@
 
         <h4>Certifications</h4>
         <ul>
-          <li>.NET Fundamentals – Great Learning Academy</li>
-          <li>Web Development – CodSoft</li>
-          <li>Engineering Equity Hackathon – Virtusa</li>
+          <li>
+            <a
+              href="certificate3.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              .NET Fundamentals – Great Learning Academy
+              <i
+                class="fas fa-external-link-alt"
+                style="margin-left: 5px; font-size: 12px"
+              ></i>
+            </a>
+          </li>
+          <li>
+            <a
+              href="certificate2.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Web Development – CodSoft
+              <i
+                class="fas fa-external-link-alt"
+                style="margin-left: 5px; font-size: 12px"
+              ></i>
+            </a>
+          </li>
+          <li>
+            <a
+              href="certificate1.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Engineering Equity Hackathon – Virtusa
+              <i
+                class="fas fa-external-link-alt"
+                style="margin-left: 5px; font-size: 12px"
+              ></i>
+            </a>
+          </li>
         </ul>
       </div>
     </section>
 
     <section id="thinkbridge" class="section fade-in">
-      <h3>Thinkbridge Learning</h3>
+      <h3>Thinkbridge Learning Journey</h3>
       <div class="card">
         <p>
           During my <strong>Thinkbridge Learning Journey</strong>, I gained
-          hands-on experience through daily structured tasks that helped me
-          build a strong foundation in front-end design, responsive layouts, and
-          version control.
+          comprehensive hands-on experience in front-end development through
+          structured daily tasks and projects.
         </p>
-        <ul>
-          <li>
-            <strong>Day 1 – HTML Fundamentals:</strong> Created a simple “About
-            Me” page while learning the core HTML tags — headings, lists, links,
-            and page structure.
-          </li>
-          <li>
-            <strong>Day 2 – CSS Basics & Box Model:</strong> Designed a clean
-            Sign-Up Form to understand margins, padding, borders, and spacing
-            rules in CSS.
-          </li>
-          <li>
-            <strong>Day 3 – Colors, Fonts & Alignment:</strong> Enhanced the
-            Sign-Up Form by experimenting with Google Fonts, custom color
-            palettes, and text alignment for better readability.
-          </li>
-          <li>
-            <strong>Day 4 – Flexbox & Responsive Design:</strong> Built a
-            responsive Portfolio Page using CSS Flexbox, ensuring proper
-            alignment, spacing, and adaptability across screen sizes.
-          </li>
-          <li>
-            <strong>Day 5 – Profile Page Project:</strong> Developed a complete
-            personal Profile Page combining all previous learnings. Added
-            sections like About, Skills, Projects, and Contact; applied advanced
-            CSS styling, hover effects, and layout precision.
-          </li>
-        </ul>
+
+        <!-- Simple Learning Timeline -->
+        <div class="simple-timeline">
+          <div class="learning-phase">
+            <h4>Week 1: HTML & CSS Foundations</h4>
+            <div class="phase-content">
+              <div class="learning-item completed">
+                <span class="item-icon">✅</span>
+                <div class="item-content">
+                  <h5>Day 1-3: HTML & CSS Fundamentals</h5>
+                  <p>
+                    Learned core HTML tags, CSS styling, box model, positioning,
+                    and responsive design principles.
+                  </p>
+                </div>
+              </div>
+
+              <div class="learning-item completed">
+                <span class="item-icon">✅</span>
+                <div class="item-content">
+                  <h5>Day 4: Development Tools</h5>
+                  <p>
+                    Mastered VS Code with essential extensions and Git version
+                    control for efficient workflow.
+                  </p>
+                </div>
+              </div>
+
+              <div class="learning-item completed">
+                <span class="item-icon">✅</span>
+                <div class="item-content">
+                  <h5>Day 5-6: Portfolio Project</h5>
+                  <p>
+                    Built a complete personal portfolio website using pure HTML
+                    and CSS, deployed on GitHub Pages.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="learning-phase">
+            <h4>Week 2: JavaScript Mastery</h4>
+            <div class="phase-content">
+              <div class="learning-item completed">
+                <span class="item-icon">✅</span>
+                <div class="item-content">
+                  <h5>Day 7-11: JavaScript Fundamentals</h5>
+                  <p>
+                    Covered JavaScript basics, DOM manipulation, functions,
+                    arrays, objects, and modern ES6+ features.
+                  </p>
+                </div>
+              </div>
+
+              <div class="learning-item current">
+                <span class="item-icon">🚀</span>
+                <div class="item-content">
+                  <h5>Day 12: Interactive Portfolio</h5>
+                  <p>
+                    Enhancing portfolio with JavaScript interactivity, dynamic
+                    features, and improved user experience.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Skills Gained -->
+        <div class="skills-gained">
+          <h4>Skills Acquired</h4>
+          <div class="skills-list">
+            <span class="skill-tag">HTML5</span>
+            <span class="skill-tag">CSS3</span>
+            <span class="skill-tag">JavaScript</span>
+            <span class="skill-tag">Responsive Design</span>
+            <span class="skill-tag">Git & GitHub</span>
+            <span class="skill-tag">VS Code</span>
+            <span class="skill-tag">DOM Manipulation</span>
+            <span class="skill-tag">Web Performance</span>
+          </div>
+        </div>
+
+        <!-- Circle Layout for Skills -->
+        <div class="outer-circle">
+          <div class="icon icon1">
+            <i class="fab fa-html5"></i>
+          </div>
+          <div class="icon icon2">
+            <i class="fab fa-css3-alt"></i>
+          </div>
+          <div class="icon icon3">
+            <i class="fab fa-js"></i>
+          </div>
+          <div class="icon icon4">
+            <i class="fab fa-git-alt"></i>
+          </div>
+        </div>
       </div>
     </section>
 
     <section id="contact" class="section fade-in">
-      <h3>Contact</h3>
-      <div class="card">
-        <p>
-          <strong>Email : </strong
-          ><a href="mailto:nandiniguptait1@gmail.com"
-            >nandiniguptait1@gmail.com</a
-          >
-        </p>
-        <p>
-          <strong>Mobile : </strong
-          ><a href="tel:+916307089359">+91 6307089359</a>
-        </p>
+      <h3>Contact Me</h3>
+
+      <div class="contact-container">
+        <div class="card contact-card">
+          <!-- Contact Information -->
+          <div class="contact-info">
+            <h4>Get In Touch</h4>
+            <div class="contact-items">
+              <div class="contact-item">
+                <i class="fas fa-envelope"></i>
+                <div class="contact-details">
+                  <strong>Email</strong>
+                  <a href="mailto:nandiniguptait1@gmail.com"
+                    >nandiniguptait1@gmail.com</a
+                  >
+                </div>
+              </div>
+              <div class="contact-item">
+                <i class="fas fa-phone"></i>
+                <div class="contact-details">
+                  <strong>Mobile</strong>
+                  <a href="tel:+916307089359">+91 6307089359</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contact Form -->
+          <div class="contact-form-container">
+            <h4>Send me a message</h4>
+            <form id="contactForm" class="contact-form">
+              <div class="form-group">
+                <input type="text" id="name" placeholder="Your Name" required />
+              </div>
+              <div class="form-group">
+                <input
+                  type="email"
+                  id="email"
+                  placeholder="Your Email"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <textarea
+                  id="message"
+                  placeholder="Your Message"
+                  rows="5"
+                  required
+                ></textarea>
+              </div>
+              <button type="submit" class="btn">Send Message</button>
+            </form>
+            <div id="formMessage"></div>
+
+            <div class="contact-stats">
+              <p>Messages received: <span id="messageCount">0</span></p>
+              <button id="viewMessagesBtn" class="btn-secondary">
+                View Messages
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
+    <button id="scrollTopBtn">↑</button>
+
+    <script src="script.js"></script>
   </body>
 </html>
