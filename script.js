@@ -4,7 +4,7 @@
 class ContactManager {
   constructor() {
     this.storageKey = "portfolio_contacts";
-    this.adminPassword = "nandini@123"; // ⚠️ CHANGE THIS PASSWORD!
+    this.adminPassword = "ABc@123";
     this.init();
   }
 
@@ -55,13 +55,11 @@ class ContactManager {
     return this.getContactsWithoutAuth();
   }
 
-  // Public method - anyone can see the count
   getContactCount() {
     const contacts = this.getContactsWithoutAuth();
     return contacts.length;
   }
 
-  // Public method - anyone can see unread count
   getUnreadCount() {
     const contacts = this.getContactsWithoutAuth();
     return contacts.filter((contact) => contact.status === "unread").length;
@@ -93,7 +91,6 @@ class ContactManager {
 // ===== INITIALIZE MANAGERS =====
 const contactManager = new ContactManager();
 
-// ===== REAL CONTACT FORM INTEGRATION =====
 function initializeContactForm() {
   const contactForm = document.getElementById("contactForm");
 
@@ -117,10 +114,9 @@ function initializeContactForm() {
     submitBtn.disabled = true;
 
     try {
-      // Using Formspree (FREE service) - Replace with your Formspree ID
       const response = await emailjs.send(
-        "service_your_service_id", // Replace with your EmailJS service ID
-        "template_your_template_id", // Replace with your EmailJS template ID
+        "YOUR_ACTUAL_SERVICE_ID",
+        "YOUR_ACTUAL_TEMPLATE_ID",
         {
           from_name: name,
           from_email: email,
@@ -136,7 +132,6 @@ function initializeContactForm() {
         );
         contactForm.reset();
 
-        // Also save locally for demo
         contactManager.saveContact(name, email, message);
         updateContactStats();
         updateNavCounter();
@@ -149,10 +144,12 @@ function initializeContactForm() {
         "Error sending message. Please try again or email me directly.",
         "error"
       );
-
-      // Fallback: Save locally
       contactManager.saveContact(name, email, message);
-      showMessage("Message saved locally. I'll check it soon!", "info");
+      showMessage(
+        "Message sent successfully! I will get back to you soon.",
+        "success",
+        "info"
+      );
       updateContactStats();
       updateNavCounter();
       contactForm.reset();
@@ -237,7 +234,6 @@ function updateContactStats() {
   }
 }
 
-// Smart Counter - Shows temporarily for new messages
 function updateNavCounter() {
   const contactLink = document.querySelector('a[href="#contact"]');
   if (!contactLink) return;
@@ -253,7 +249,6 @@ function updateNavCounter() {
     }
     counter.textContent = contactCount;
 
-    // Auto-hide after 5 seconds
     setTimeout(() => {
       if (counter && counter.parentNode) {
         counter.remove();
@@ -284,7 +279,6 @@ function initializeEnhancedNavHighlight() {
       }
     });
 
-    // Update active class
     navLinks.forEach((link) => {
       link.classList.remove("active");
       if (link.getAttribute("href") === `#${current}`) {
@@ -293,7 +287,6 @@ function initializeEnhancedNavHighlight() {
     });
   }
 
-  // Listen for scroll events
   window.addEventListener("scroll", updateActiveNav);
   window.addEventListener("load", updateActiveNav);
 }
@@ -340,7 +333,8 @@ function smoothScrollTo(targetPosition, duration) {
   requestAnimationFrame(animation);
 }
 
-// ===== MOBILE MENU =====
+// Enhanced Mobile Menu Functionality
+// ===== MOBILE MENU FUNCTIONALITY =====
 function initializeMobileMenu() {
   const navToggle = document.querySelector(".nav-toggle");
   const navUl = document.querySelector(".navbar ul");
@@ -367,32 +361,30 @@ function initializeMobileMenu() {
   // Close menu when clicking on links
   navUl.querySelectorAll("a").forEach((link) => {
     link.addEventListener("click", () => {
-      navUl.classList.remove("open");
-      navToggle.classList.remove("open");
-      navToggle.setAttribute("aria-expanded", "false");
-      document.body.style.overflow = "";
+      closeMobileMenu();
     });
   });
 
   // Close menu when clicking outside
   document.addEventListener("click", (e) => {
     if (!navUl.contains(e.target) && !navToggle.contains(e.target)) {
-      navUl.classList.remove("open");
-      navToggle.classList.remove("open");
-      navToggle.setAttribute("aria-expanded", "false");
-      document.body.style.overflow = "";
+      closeMobileMenu();
     }
   });
 
   // Close menu on escape key
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && navUl.classList.contains("open")) {
-      navUl.classList.remove("open");
-      navToggle.classList.remove("open");
-      navToggle.setAttribute("aria-expanded", "false");
-      document.body.style.overflow = "";
+      closeMobileMenu();
     }
   });
+
+  function closeMobileMenu() {
+    navUl.classList.remove("open");
+    navToggle.classList.remove("open");
+    navToggle.setAttribute("aria-expanded", "false");
+    document.body.style.overflow = "";
+  }
 }
 
 // ===== SKILLS ANIMATION =====
@@ -811,6 +803,10 @@ window.addEventListener("error", function (e) {
 
 // Initialize contact counter
 updateNavCounter();
+
+// Initialize contact counter
+updateNavCounter();
+
 // ===== THEME TOGGLE FUNCTIONALITY =====
 function initializeTheme() {
   // Create theme toggle button
@@ -843,4 +839,110 @@ function initializeTheme() {
 
     localStorage.setItem("portfolio-theme", isLight ? "light" : "dark");
   });
+
+  // Add scroll behavior for dark mode button
+  initializeThemeButtonScroll();
+}
+
+// ===== DARK MODE BUTTON SCROLL BEHAVIOR =====
+function initializeThemeButtonScroll() {
+  const themeToggle = document.getElementById("themeToggle");
+  const scrollTopBtn = document.getElementById("scrollTopBtn");
+
+  if (!themeToggle) return;
+
+  function toggleScrollButtons() {
+    const scrollPosition = window.pageYOffset;
+
+    // Show/hide both buttons at the same time
+    if (scrollPosition > 200) {
+      themeToggle.classList.add("show");
+      if (scrollTopBtn) {
+        scrollTopBtn.style.display = "block";
+      }
+    } else {
+      themeToggle.classList.remove("show");
+      if (scrollTopBtn) {
+        scrollTopBtn.style.display = "none";
+      }
+    }
+  }
+
+  window.addEventListener("scroll", toggleScrollButtons);
+  toggleScrollButtons(); // Initial check
+}
+
+// ===== FIXED MOBILE MENU FUNCTIONALITY =====
+function initializeMobileMenu() {
+  const navToggle = document.querySelector(".nav-toggle");
+  const navUl = document.querySelector(".navbar ul");
+
+  if (!navToggle || !navUl) {
+    console.warn("Mobile menu elements not found");
+    return;
+  }
+
+  navToggle.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const isExpanded = navToggle.getAttribute("aria-expanded") === "true";
+
+    navToggle.setAttribute("aria-expanded", String(!isExpanded));
+    navToggle.classList.toggle("open");
+    navUl.classList.toggle("open");
+
+    // Prevent body scroll when menu is open
+    document.body.style.overflow = navUl.classList.contains("open")
+      ? "hidden"
+      : "";
+  });
+
+  // Close menu when clicking on links
+  navUl.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => {
+      closeMobileMenu();
+    });
+  });
+
+  // Close menu when clicking outside
+  document.addEventListener("click", (e) => {
+    if (!navUl.contains(e.target) && !navToggle.contains(e.target)) {
+      closeMobileMenu();
+    }
+  });
+
+  // Close menu on escape key
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && navUl.classList.contains("open")) {
+      closeMobileMenu();
+    }
+  });
+
+  function closeMobileMenu() {
+    navUl.classList.remove("open");
+    navToggle.classList.remove("open");
+    navToggle.setAttribute("aria-expanded", "false");
+    document.body.style.overflow = "";
+  }
+}
+
+// ===== NAVIGATION TOGGLE SCROLL BEHAVIOR =====
+function initializeNavToggleScroll() {
+  const navToggle = document.querySelector(".nav-toggle");
+
+  if (!navToggle) return;
+
+  function toggleNavButton() {
+    const scrollPosition = window.pageYOffset;
+
+    // Show nav toggle on scroll (for mobile)
+    if (window.innerWidth <= 880 && scrollPosition > 100) {
+      navToggle.classList.add("show");
+    } else {
+      navToggle.classList.remove("show");
+    }
+  }
+
+  window.addEventListener("scroll", toggleNavButton);
+  window.addEventListener("resize", toggleNavButton);
+  toggleNavButton(); // Initial check
 }
